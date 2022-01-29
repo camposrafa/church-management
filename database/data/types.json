@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Sede",
+        "key_": "sede"
+    },
+    {
+        "name": "Sub-Sede",
+        "key_": "sub_sede"
+    },
+    {
+        "name": "Filial",
+        "key_": "filial"
+    }
+]

@@ -1,0 +1,54 @@
+version: "3.7"
+services:
+  church_management_api_app:
+    build:
+      args:
+        user: sammy
+        uid: 1000
+      context: ./
+      dockerfile: docker/dev/Dockerfile
+    image: church_management_api_app
+    container_name: church_management_api_app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - .:/var/www
+    networks:
+      - church_management_api_net
+
+  church_management_api_db:
+    image: mysql:8.0.17
+    container_name: church_management_api_db
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - "church_management_api_data:/var/lib/mysql"
+    ports:
+      - "${DB_PORT}:3306"
+    networks:
+      - church_management_api_net
+
+  church_management_api_nginx:
+    image: nginx:alpine
+    container_name: church_management_api_nginx
+    restart: unless-stopped
+    ports:
+      - "3030:80"
+    volumes:
+      - .:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d/
+    networks:
+      - church_management_api_net
+
+volumes:
+  church_management_api_data:
+
+networks:
+  church_management_api_net:
